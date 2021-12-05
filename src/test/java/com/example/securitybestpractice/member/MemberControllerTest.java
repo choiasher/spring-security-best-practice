@@ -1,6 +1,8 @@
 package com.example.securitybestpractice.member;
 
 import com.example.securitybestpractice.SecurityBestPracticeApplication;
+import com.example.securitybestpractice.role.Role;
+import com.example.securitybestpractice.role.RoleRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,9 +14,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Collections;
-import java.util.HashSet;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
@@ -40,12 +39,14 @@ class MemberControllerTest {
     @Autowired
     private MemberService memberService;
 
+    @Autowired
+    private RoleRepository roleRepository;
 
     Member given_유저(String email, String password) {
         return Member.builder()
                 .email("tahun970@naver.com")
                 .password("123abc")
-                .roles(new HashSet<>(Collections.singleton("USER")))
+                .role(roleRepository.findByName("ROLE_USER"))
                 .build();
     }
 
