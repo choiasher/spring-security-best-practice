@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,16 +31,12 @@ public class MemberService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Member member = memberRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
-
         member.setAuthorities(getPrivileges(member.getRole()));
-
         return member;
     }
 
     private List<SimpleGrantedAuthority> getPrivileges(Role role) {
-        return role.getPrivileges().stream()
-                .map(privilege -> new SimpleGrantedAuthority(privilege.getName()))
-                .collect(Collectors.toList());
+        return Collections.singletonList(new SimpleGrantedAuthority(role.getName()));
     }
 
     @Transactional

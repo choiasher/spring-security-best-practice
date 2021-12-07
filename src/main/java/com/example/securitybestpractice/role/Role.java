@@ -26,14 +26,4 @@ public class Role {
 
     @Column
     private String name;
-
-    @Builder.Default
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "role_privilege",
-            joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "privilege_id", referencedColumnName = "id")
-    )
-    private Set<Privilege> privileges = new HashSet<>();
 }

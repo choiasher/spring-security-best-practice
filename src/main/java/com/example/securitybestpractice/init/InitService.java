@@ -2,20 +2,13 @@ package com.example.securitybestpractice.init;
 
 import com.example.securitybestpractice.member.Member;
 import com.example.securitybestpractice.member.MemberService;
-import com.example.securitybestpractice.role.Privilege;
-import com.example.securitybestpractice.role.PrivilegeRepository;
 import com.example.securitybestpractice.role.Role;
 import com.example.securitybestpractice.role.RoleRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.util.List;
-import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -25,7 +18,7 @@ public class InitService {
     private final MemberInitService memberInitService;
 
     @PostConstruct
-    public void init()  {
+    public void init() {
         roleInitService.init();
         memberInitService.init();
     }
@@ -33,18 +26,12 @@ public class InitService {
     @RequiredArgsConstructor
     @Component
     static class RoleInitService {
-        private final PrivilegeRepository privilegeRepository;
         private final RoleRepository roleRepository;
 
         public void init() {
-
-            Privilege attachCorporation = privilegeRepository.save(Privilege.builder().name("ATTACH_CORPORATION").build());
-            Privilege crudPostComment = privilegeRepository.save(Privilege.builder().name("READ_WRITE_POST_COMMENT").build());
-            Privilege crudAll = privilegeRepository.save(Privilege.builder().name("ALL_CRUD").build());
-
-            roleRepository.save(Role.builder().name("ROLE_TEMPORARY_USER").privileges(Set.of(attachCorporation)).build());
-            roleRepository.save(Role.builder().name("ROLE_USER").privileges(Set.of(crudPostComment)).build());
-            roleRepository.save(Role.builder().name("ROLE_ADMIN").privileges(Set.of(crudAll)).build());
+            roleRepository.save(Role.builder().name("ROLE_TEMPORARY_USER").build());
+            roleRepository.save(Role.builder().name("ROLE_USER").build());
+            roleRepository.save(Role.builder().name("ROLE_ADMIN").build());
         }
 
     }

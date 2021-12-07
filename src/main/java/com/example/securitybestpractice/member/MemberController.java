@@ -21,7 +21,7 @@ public class MemberController {
         return memberService.signUp(member);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/members")
     public ResponseEntity<List<Member>> findAll() {
         return ResponseEntity.ok(memberService.findAll());
