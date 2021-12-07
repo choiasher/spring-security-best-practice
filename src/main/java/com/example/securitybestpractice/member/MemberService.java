@@ -1,10 +1,8 @@
 package com.example.securitybestpractice.member;
 
-import com.example.securitybestpractice.role.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,9 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -31,12 +27,8 @@ public class MemberService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Member member = memberRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
-        member.setAuthorities(getPrivileges(member.getRole()));
+        member.acquireAuthorities();
         return member;
-    }
-
-    private List<SimpleGrantedAuthority> getPrivileges(Role role) {
-        return Collections.singletonList(new SimpleGrantedAuthority(role.getName()));
     }
 
     @Transactional

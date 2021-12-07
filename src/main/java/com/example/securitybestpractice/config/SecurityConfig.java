@@ -1,5 +1,6 @@
 package com.example.securitybestpractice.config;
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -9,7 +10,9 @@ import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.FilterInvocation;
@@ -47,6 +50,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        return new AffirmativeBased(voters);
 //    }
 
+    /**
+     * 정적 resource들은 servlet filter chain을 안타게 하는것이 성능상 유리
+     * 굳이 authorized request로 받아들여서 decision manager가 인가를 할지말지까지 filter들은 다 검사할 필요가 없음
+     * @param web
+     */
+    @Override
+    public void configure(WebSecurity web) {
+        web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+    }
+
     public SecurityExpressionHandler<FilterInvocation> expressionHandler() {
         RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
         roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_USER");
@@ -63,7 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //인가설정
         http.authorizeRequests()
                 .mvcMatchers(HttpMethod.POST, "/sign-up").permitAll()
-                //.mvcMatchers("/member/**").permitAll()
+                .mvcMatchers("/member/**").permitAll()
                 .mvcMatchers("/", "/info").permitAll()
                 .mvcMatchers("/admin").hasRole("ADMIN")
                 .mvcMatchers("/user").hasRole("USER")
@@ -75,6 +88,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //로그인 설정
         http.formLogin();
         http.httpBasic();
+
+        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
     }
 
 }

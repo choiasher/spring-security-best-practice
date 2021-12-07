@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Collections;
 
 @Builder
 @Getter
@@ -43,9 +44,15 @@ public class Member implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (this.authorities == null) {
+            acquireAuthorities();
+        }
         return this.authorities;
     }
 
+    public void acquireAuthorities() {
+        this.authorities = Collections.singleton(new SimpleGrantedAuthority(this.role.getAuthority()));
+    }
 
     @Override
     public String getUsername() {
