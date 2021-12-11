@@ -1,5 +1,6 @@
 package com.example.securitybestpractice.member;
 
+import com.example.securitybestpractice.member.adaptor.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,8 +28,7 @@ public class MemberService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Member member = memberRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
-        member.acquireAuthorities();
-        return member;
+        return new CurrentUser(member);
     }
 
     @Transactional

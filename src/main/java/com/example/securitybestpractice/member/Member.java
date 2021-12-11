@@ -18,7 +18,7 @@ import java.util.Collections;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Member implements UserDetails {
+public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -42,40 +42,4 @@ public class Member implements UserDetails {
         this.password = passwordEncoder.encode(this.password);
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (this.authorities == null) {
-            acquireAuthorities();
-        }
-        return this.authorities;
-    }
-
-    public void acquireAuthorities() {
-        this.authorities = Collections.singleton(new SimpleGrantedAuthority(this.role.getAuthority()));
-    }
-
-    @Override
-    public String getUsername() {
-        return this.email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }

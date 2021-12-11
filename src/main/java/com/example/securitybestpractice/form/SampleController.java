@@ -1,6 +1,8 @@
 package com.example.securitybestpractice.form;
 
 import com.example.securitybestpractice.common.SecurityLogger;
+import com.example.securitybestpractice.member.CurrentUser;
+import com.example.securitybestpractice.member.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,9 +19,9 @@ public class SampleController {
     private final SampleService sampleService;
 
     @GetMapping("/")
-    public String index(Model model, Principal principal) {
-        if (principal != null) {
-            model.addAttribute("message", "Hello index with user: " + principal.getName());
+    public String index(Model model, @CurrentUser Member member) {
+        if (member != null) {
+            model.addAttribute("message", "Hello index with user: " + member.getEmail());
         } else {
             model.addAttribute("message", "Hello index");
         }
@@ -33,8 +35,9 @@ public class SampleController {
     }
 
     @GetMapping("/dashboard")
-    public String dashboard(Model model, Principal principal) {
-        model.addAttribute("message", "Hello user: " + principal.getName());
+    public String dashboard(Model model, @CurrentUser Member member) {
+        System.out.println("!!!" + member.toString());
+        model.addAttribute("message", "Hello user: " + member.getEmail());
         sampleService.dashboard();
         return "dashboard";
     }
@@ -54,6 +57,7 @@ public class SampleController {
     /**
      * WebAsyncManagerIntegrationFilter
      * Callable를 return해도 SecurityContext를 공유하게 도와주기 때문에 동일한 SecurityContext를 참조할 수 있음
+     *
      * @return
      */
     @GetMapping("/async-handler")
@@ -69,6 +73,7 @@ public class SampleController {
     /**
      * WebAsyncManagerIntegrationFilter X
      * Callable를 return해도 SecurityContext를 공유하게 도와주기 때문에 동일한 SecurityContext를 참조할 수 있음
+     *
      * @return
      */
     @GetMapping("/async-service")

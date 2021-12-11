@@ -14,7 +14,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Role implements GrantedAuthority, Serializable {
+public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,8 +24,4 @@ public class Role implements GrantedAuthority, Serializable {
     @Column
     private String name;
 
-    @Override
-    public String getAuthority() {
-        return name;
-    }
 }
