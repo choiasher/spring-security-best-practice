@@ -12,6 +12,7 @@ import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -71,6 +72,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        //cross site request forgery allow
         http.csrf().disable();
 
         //인가설정
@@ -87,7 +89,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         //로그인 설정
         http.formLogin();
+
+        // Http basic authentication filter사용
+        //요청 헤더에 username, password를 실어서 보냄 base 64 encoding하긴하지만
+        //인증에 취약하기떄문에 HTTPS권장
         http.httpBasic();
+
+        //http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
 
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
     }
